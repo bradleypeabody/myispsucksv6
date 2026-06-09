@@ -1,0 +1,36 @@
+[Unit]
+Description=myispsucksv6 NDP proxy with dynamic IPv6 prefix tracking
+Documentation=https://github.com/bradleypeabody/myispsucksv6
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/myispsucksv6 --config /etc/myispsucksv6.jsonc
+Restart=on-failure
+RestartSec=5
+
+# Run as a transient unprivileged user; no manual user creation needed.
+DynamicUser=yes
+
+# Needed for AF_PACKET raw sockets (NDP proxy) and address management.
+AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN
+
+# State directory — kernel creates /var/lib/myispsucksv6/ and chowns it.
+StateDirectory=myispsucksv6
+StateDirectoryMode=0700
+
+# Hardening
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_NETLINK AF_PACKET
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallFilter=@system-service @network-io
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+{
+  "global": {
+    "log_level": "info"  // change to "debug" to log RA sends, DNS resolution, and NDP probe results
+  },
+  "upstream": [
+    {
+      "interface": "enp1s0",      // WAN interface — change this
+      "debounce_seconds": 5,
+      "proxy": [
+        {
+          "to_interface": "enp2s0", // LAN interface — change this
+          "lan_host_suffix": "::1",
+
+          // Built-in RA emitter (set disable_ra: true to use radvd/hooks instead)
+          "disable_ra": false,
+          "ra_interval_seconds": 200,         // max unsolicited RA interval
+          "ra_router_lifetime_seconds": 1800,
+          "ra_mtu": 1500,
+          "ra_dns_servers": ["self"],          // "self" = router's own LAN address
+          "ra_valid_lifetime": 86400,          // 24h
+          "ra_preferred_lifetime": 14400       // 4h
+        }
+      ]
+    }
+  ],
+  "hooks": {
+    "on_prefix_change_dir": "/etc/myispsucksv6/hooks.d"
+  }
+}
