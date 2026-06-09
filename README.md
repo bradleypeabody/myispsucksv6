@@ -1,6 +1,8 @@
 # myispsucksv6
 
-NDP proxy daemon with dynamic prefix tracking for home routers behind ISPs that assign IPv6 via SLAAC but don't offer DHCPv6 prefix delegation (T-Mobile Home Internet, AT&T Internet Air, Verizon 5G Home, etc.).
+IPv6 has been a standard for over 25 years. DHCPv6 prefix delegation has been an RFC since 2003. And yet here we are — major US carriers handing out a single `/64` via SLAAC and calling it a day, as if nobody behind their gateway might want to actually route packets. This tool exists because some of us refuse to NAT our way out of a problem that shouldn't exist.
+
+`myispsucksv6` is an NDP proxy daemon with dynamic prefix tracking for home routers behind ISPs that assign IPv6 via SLAAC but don't offer DHCPv6 prefix delegation (T-Mobile Home Internet, AT&T Internet Air, Verizon 5G Home, etc.).
 
 ## The problem
 
@@ -29,8 +31,9 @@ Requires Go 1.22+:
 ```bash
 git clone https://github.com/bradleypeabody/myispsucksv6
 cd myispsucksv6
-go build -o myispsucksv6 ./cmd/myispsucksv6
-install -m 755 myispsucksv6 /usr/local/bin/myispsucksv6
+mkdir -p bin
+go build -o bin/myispsucksv6 ./cmd/myispsucksv6
+install -m 755 bin/myispsucksv6 /usr/local/bin/myispsucksv6
 ```
 
 ### 2. Configure
