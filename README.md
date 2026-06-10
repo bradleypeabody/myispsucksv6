@@ -6,9 +6,9 @@ IPv6 has been a standard for over 25 years. DHCPv6 prefix delegation has been an
 
 ## The problem
 
-Some ISPs give a single `/64` on your WAN interface via SLAAC. You have a Linux router between the modem and your LAN. You want LAN clients to get real, routable IPv6 addresses — no NAT — but the ISP prefix changes over time and the prefix can't be delegated.
+Some ISPs give a single `/64` on your WAN interface via SLAAC. You have a Linux router between the modem and your LAN. You want LAN clients to get real, routable IPv6 addresses — no NAT — but the ISP prefix changes over time and the prefix can't be delegated (because the ISP for some reason couldn't be bothered to enable IPv6 Prefix Delegation, which would solve the problem and allow standard IPv6 tooling to work).
 
-The existing tool for this is `ndppd`, which proxies NDP so your upstream gateway believes your LAN devices live on the WAN interface. It works, but it assumes a static prefix. When T-Mobile renumbers you, everything breaks until you manually reconfigure `ndppd`, your router's LAN address, and your RA daemon.
+The existing tool that does something similar to `myispsucksv6` is [ndppd](https://github.com/DanielAdolfsson/ndppd), which proxies NDP so your upstream gateway believes your LAN devices live on the WAN interface. It works, but it assumes a static prefix. When T-Mobile renumbers you, everything breaks until you manually reconfigure `ndppd`, your router's LAN address, and your RA daemon.
 
 `myispsucksv6` fixes that.
 
