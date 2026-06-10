@@ -143,6 +143,22 @@ net.ipv6.conf.<wan-interface>.accept_ra = 2
 
 The `2` means "accept RA even when forwarding is enabled." `myispsucksv6` will log a warning at startup if it detects that forwarding is on but `accept_ra` is not set to `2` on the WAN interface.
 
+### Why `noprefixroute` matters
+
+When IPv6 forwarding is enabled, the kernel automatically marks SLAAC-assigned addresses with the `noprefixroute` flag. This suppresses the implicit on-link route that would otherwise be installed for the entire `/64` on the WAN interface. Without that suppression, the kernel would believe all addresses in your ISP's `/64` are directly reachable on the WAN segment — and would try to NDP-resolve your LAN clients out the WAN interface, bypassing the proxy entirely. The NDP proxy only works because no such route exists; `forwarding = 1` is what ensures it doesn't get created.
+
+### Manually assigned WAN addresses
+
+If your setup requires assigning a static IPv6 address to the WAN interface rather than relying on SLAAC, you must include the `noprefixroute` option yourself. With systemd-networkd, add this to your WAN `.network` file:
+
+```ini
+[Address]
+Address = 2607:fb92:601:4570::1/64
+NoPrefixRoute = yes
+```
+
+Without `NoPrefixRoute = yes`, systemd-networkd will install an on-link route for the `/64` on the WAN interface and the NDP proxy will not function correctly.
+
 ## How it works
 
 ```

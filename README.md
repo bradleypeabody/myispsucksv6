@@ -24,6 +24,20 @@ The right solution is for carriers to offer DHCPv6 prefix delegation — sadly, 
 
 What it does **not** do: run DHCPv6, or touch your firewall.
 
+## Prerequisites
+
+`myispsucksv6` assumes you already have a Linux router with two interfaces (WAN and LAN) and basic forwarding in place. If you're starting from scratch, the [Arch Wiki Router page](https://wiki.archlinux.org/title/Router) is a solid reference for the general setup using systemd-networkd, nftables, and related tools.
+
+Two sysctls are required:
+
+```bash
+# /etc/sysctl.d/99-ipv6-forward.conf
+net.ipv6.conf.all.forwarding = 1
+net.ipv6.conf.<wan-interface>.accept_ra = 2
+```
+
+`forwarding = 1` enables IPv6 packet forwarding between interfaces. `accept_ra = 2` is required on the WAN interface because enabling forwarding causes the kernel to otherwise ignore Router Advertisements on all interfaces — without it, your WAN interface won't receive a SLAAC address from the ISP.
+
 ## Quick start
 
 ### 1. Build and install
